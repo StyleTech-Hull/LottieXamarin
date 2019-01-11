@@ -109,5 +109,9 @@
   <ItemGroup Condition=" '$(OS)' != 'Windows_NT' " Label="Package">
     <None Include="..\Dlls\uap10.0.16299\*.*" PackagePath="lib\uap10.0.16299" Pack="true" Visible="false" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Converters\ImageSourceConverter.cs" />
+  </ItemGroup>
   
 </Project>

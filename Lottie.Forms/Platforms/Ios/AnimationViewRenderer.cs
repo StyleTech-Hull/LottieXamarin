@@ -48,7 +48,7 @@ namespace Lottie.Forms.iOS.Renderers
             e.NewElement.OnPlayProgressSegment += OnPlayProgressSegment;
             e.NewElement.OnPlayFrameSegment += OnPlayFrameSegment;
 
-            if (!string.IsNullOrEmpty(e.NewElement.Animation))
+            if (e.NewElement.Animation != null)
             {
                 InitAnimationViewForElement(e.NewElement);
             }
@@ -85,7 +85,7 @@ namespace Lottie.Forms.iOS.Renderers
             if (Element == null)
                 return;
 
-            if (e.PropertyName == AnimationView.AnimationProperty.PropertyName && !string.IsNullOrEmpty(Element.Animation))
+            if (e.PropertyName == AnimationView.AnimationProperty.PropertyName && Element.Animation != null)
             {
                 _animationView?.RemoveFromSuperview();
                 _animationView?.RemoveGestureRecognizer(_gestureRecognizer);
@@ -113,13 +113,20 @@ namespace Lottie.Forms.iOS.Renderers
 
         private void InitAnimationViewForElement(AnimationView theElement)
         {
-            _animationView = new LOTAnimationView(NSUrl.FromFilename(theElement.Animation))
-            {
-                AutoresizingMask = UIViewAutoresizing.All,
-                ContentMode = UIViewContentMode.ScaleAspectFit,
-                LoopAnimation = theElement.Loop,
-                AnimationSpeed = theElement.Speed
-            };
+            //_animationView = new LOTAnimationView(NSUrl.FromFilename(theElement.Animation))
+            //{
+            //    AutoresizingMask = UIViewAutoresizing.All,
+            //    ContentMode = UIViewContentMode.ScaleAspectFit,
+            //    LoopAnimation = theElement.Loop,
+            //    AnimationSpeed = theElement.Speed
+            //};
+
+            _animationView = GetImageSourceBinding(theElement.Animation);
+
+            _animationView.AutoresizingMask = UIViewAutoresizing.All;
+            _animationView.ContentMode = UIViewContentMode.ScaleAspectFit;
+            _animationView.LoopAnimation = theElement.Loop;
+            _animationView.AnimationSpeed = theElement.Speed;
 
             _gestureRecognizer = new UITapGestureRecognizer(theElement.Click);
             _animationView.AddGestureRecognizer(_gestureRecognizer);
@@ -144,6 +151,43 @@ namespace Lottie.Forms.iOS.Renderers
             {
                 Element?.PlaybackFinished();
             }
+        }
+
+        internal static LOTAnimationView GetImageSourceBinding(ImageSource source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            if (source is UriImageSource uriImageSource)
+            {
+                var uri = uriImageSource.Uri?.OriginalString;
+                if (string.IsNullOrWhiteSpace(uri))
+                    return null;
+
+                return new LOTAnimationView(NSUrl.FromString(uriImageSource.Uri.AbsoluteUri));
+            }
+
+            if (source is FileImageSource fileImageSource)
+            {
+                if (string.IsNullOrWhiteSpace(fileImageSource.File))
+                    return null;
+
+                return new LOTAnimationView(NSUrl.FromFilename(fileImageSource.File));
+
+                //if (fileImageSource.File.StartsWith("/", StringComparison.InvariantCultureIgnoreCase) && File.Exists(fileImageSource.File))
+                //    return new ImageSourceBinding(FFImageLoading.Work.ImageSource.Filepath, fileImageSource.File);
+
+                //return new ImageSourceBinding(FFImageLoading.Work.ImageSource.CompiledResource, fileImageSource.File);
+            }
+
+            //if (source is StreamImageSource streamImageSource)
+            //{
+            //    return new ImageSourceBinding(streamImageSource.Stream);
+            //}
+
+            throw new NotImplementedException("ImageSource type not supported");
         }
     }
 }

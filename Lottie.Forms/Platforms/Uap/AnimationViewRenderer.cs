@@ -66,9 +66,10 @@ namespace Lottie.Forms.UWP.Renderers
                 _animationView.Tapped += AnimationViewTapped;
                 _animationView.AnimatorUpdate += PlaybackFinishedIfProgressReachesOne;
 
-                if (!string.IsNullOrEmpty(e.NewElement.Animation))
+                if (e.NewElement.Animation != null)
                 {
-                    await _animationView.SetAnimationAsync(e.NewElement.Animation);
+                    //TODO: Actually implement for UWP
+                    await _animationView.SetAnimationAsync(e.NewElement.Animation.ToString());
                     Element.Duration = TimeSpan.FromMilliseconds(_animationView.Duration);
                 }
 
@@ -163,9 +164,10 @@ namespace Lottie.Forms.UWP.Renderers
             if (_animationView == null || Element == null)
                 return;
 
-            if (e.PropertyName == AnimationView.AnimationProperty.PropertyName && !string.IsNullOrEmpty(Element.Animation))
+            if (e.PropertyName == AnimationView.AnimationProperty.PropertyName && Element.Animation != null)
             {
-                await _animationView.SetAnimationAsync(Element.Animation);
+                //TODO: actually implement for uwp
+                await _animationView.SetAnimationAsync(Element.Animation.ToString());
                 Element.Duration = TimeSpan.FromMilliseconds(_animationView.Duration);
 
                 if (Element.AutoPlay)

@@ -21,7 +21,7 @@ namespace Lottie.Forms
             typeof(TimeSpan), typeof(AnimationView), default(TimeSpan));
 
         public static readonly BindableProperty AnimationProperty = BindableProperty.Create(nameof(Animation),
-            typeof(string), typeof(AnimationView), default(string));
+            typeof(ImageSource), typeof(AnimationView), default(ImageSource));
 
         public static readonly BindableProperty AutoPlayProperty = BindableProperty.Create(nameof(AutoPlay),
             typeof(bool), typeof(AnimationView), default(bool));
@@ -47,9 +47,10 @@ namespace Lottie.Forms
             set { SetValue(ProgressProperty, value); }
         }
 
-        public string Animation
+        [System.ComponentModel.TypeConverter(typeof(ImageSourceConverter))]
+        public ImageSource Animation
         {
-            get { return (string) GetValue(AnimationProperty); }
+            get { return (ImageSource) GetValue(AnimationProperty); }
             set { SetValue(AnimationProperty, value); }
         }
 
