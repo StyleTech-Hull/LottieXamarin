@@ -13,7 +13,7 @@ var outputDir = new DirectoryPath("./artifacts");
 var nuspecDir = new DirectoryPath("./nuspec");
 var nugetPackagesDir = new DirectoryPath("./nuget/packages");
 var target = Argument("target", "Default");
-var configuration = Argument("configuration", "Release");
+var configuration = Argument("configuration", "Debug");
 var verbosityArg = Argument("verbosity", "Minimal");
 var verbosity = Verbosity.Minimal;
 
